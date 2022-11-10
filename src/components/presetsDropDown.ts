@@ -2,26 +2,33 @@ import { css, CSSResultGroup, html, LitElement, PropertyValues, TemplateResult }
 import { customElement, property, state } from "lit/decorators";
 import { BoilerplateCardConfig, HoneywellEntity } from "../types";
 import { localize } from "../localize/localize";
-import { getModeOptions, cssUtils } from "../utils";
 import { HomeAssistant } from "custom-card-helpers/dist/types";
+import { cssUtils } from "../utils";
 
 // @description
 // Loop through hvac modes and print out the Buttons attached with a click
 // handler to call HASS Service to change them
-@customElement("ha-hvac-modes")
-export class HaHvacModes extends LitElement {
-  @property() config: BoilerplateCardConfig;
+@customElement("ha-presets-dropdown")
+export class HaPresetsDropdown extends LitElement {
   @property() hass: HomeAssistant;
-  @state() entity: HoneywellEntity | undefined
+  @property() config: BoilerplateCardConfig;
 
+  @state() entity: HoneywellEntity | undefined
+  @state() state: {
+    items: string[]
+    currentValue: string
+  } = {
+      items: [],
+      currentValue: ''
+  }
 
   constructor(config: BoilerplateCardConfig, hass: HomeAssistant) {
     super();
-    this.hass = hass
     this.config = config
+    this.hass = hass
   }
 
-  // Only update if the states of mode have changed
+  // Only update if the preset mode has changed
   protected shouldUpdate(changedProps: PropertyValues): boolean {
     const prevHass = changedProps.get('hass')
     const prevConfig = changedProps.get('config')
@@ -38,55 +45,51 @@ export class HaHvacModes extends LitElement {
     const prevEntity = prevHass.states[prevConfig.entity] as HoneywellEntity
     const currentEntity = this.hass.states[this.config.entity] as HoneywellEntity
 
-    return prevEntity.state !== currentEntity.state
+    return prevEntity.attributes.preset_mode !== currentEntity.attributes.preset_mode
   }
 
   protected render(): TemplateResult {
-
     if (this.config.show_error || !this.config.entity) {
       return this._showError(localize('common.show_error'));
     }
     this.entity = this.hass.states[this.config.entity] as HoneywellEntity
+    this.state = {
+      items: this.entity.attributes.preset_modes,
+      currentValue: this.entity.attributes.preset_mode
+    }
 
     return html`
-      <div class="modes-wrapper flex flex-row space-between">
-        ${this.entity.attributes.hvac_modes.map((mode, index) => {
+      <ha-select
+        naturalMenuWidth
+        .value=${this.state.currentValue}
+        @selected=${this._changed}
+        >
 
-          const modeObj = getModeOptions(mode)
-          return html`
-            <ha-custom-button
-              id="mode-${index}"
-              class="button-wrapper flex-1 overflow-hidden"
-              selected=${mode === this.entity?.state}
-              color="${modeObj.color}"
-              @click=${this.handleClick(mode)}
-            >
-              <ha-icon
-              id="ha-icon"
-              icon="${modeObj.icon}"></ha-icon>
+        ${this.state.items
+          .map((mode, index) =>
+              html`<mwc-list-item tabindex=${index} role="option" .value=${mode}>${mode}</mwc-list-item>`
+          )}
 
-              <div class="mode-name">
-                ${modeObj.name}
-              </div>
-
-            </ha-custom-button>
-          `
-        })}
-      </div>
+      </ha-select>
     `
   }
 
-  private handleClick(mode: string) {
-
-    return () => {
-      if(!this.config.entity) return
-
-      this.hass.callService("climate", "set_hvac_mode", {
-        entity_id: this.config.entity,
-        hvac_mode: mode
-      });
+  private async _changed(ev): Promise<void> {
+    if (!this.hass || ev.target.value === "") {
+      return;
     }
+    const prevValue = this.state.currentValue
+    this.state.currentValue = ev.target.value;
 
+    try {
+      await this.hass.callService("climate", "set_preset_mode", {
+        entity_id: this.config.entity,
+        preset_mode: this.state.currentValue
+      });
+    } catch (e: any) {
+      console.error('preset error', e)
+      this.state.currentValue = prevValue
+    }
   }
 
   private _showError(error: string): TemplateResult {
@@ -103,17 +106,11 @@ export class HaHvacModes extends LitElement {
   static get styles(): CSSResultGroup {
     return css`
       :host{
-
+        width: 100%;
       }
-      .modes-wrapper{
-        column-gap: 8px;
+      ha-select{
+        width: 100%;
       }
-      .mode-name{
-        font-size: 14px;
-        font-weight: 600;
-        margin-top: 8px;
-      }
-      ${cssUtils}
   `;
   }
 }
@@ -122,6 +119,6 @@ export class HaHvacModes extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    "ha-hvac-modes": any;
+    "ha-presets-dropdown": any;
   }
 }

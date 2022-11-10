@@ -6,16 +6,17 @@ import { localize } from "./localize/localize";
 import { BoilerplateCardConfig, HoneywellConfig, HoneywellEntity, HvacModes, IControlProps, ITargetTempsState, ITempClickOptions } from "./types";
 import './components/controls'
 import './components/hvacModes'
+import './components/presetsDropDown'
+import './components/fanModes'
+import './components/auxHeat'
 import { getModeOptions } from "./utils";
 
 @customElement("ha-custom-popup")
 export class HaCustomPopup extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
   @state() private config!: BoilerplateCardConfig;
-  @state() private value?: string;
   @property() open;
-  @query("ha-dialog") dialog: any;
-  private tempEntity: null | HoneywellEntity = null
+  @state() private tempEntity: null | HoneywellEntity = null
 
   public static getStubConfig(): Record<string, unknown> {
     return {};
@@ -85,7 +86,6 @@ export class HaCustomPopup extends LitElement {
     }
 
     this.tempEntity = this.hass.states[this.config.entity] as HoneywellEntity
-    this.value = this.tempEntity.attributes.preset_mode
     // console.log(this.tempEntity)
 
     if (this.open === "false") return html``
@@ -142,53 +142,51 @@ export class HaCustomPopup extends LitElement {
                   Presets
                 </div>
                 <div id="presetselect" class="flex">
-                ${this.renderPresetSelect()}
+                  <ha-presets-dropdown
+                    .hass=${this.hass}
+                    .config=${this.config}
+                  ></ha-presets-dropdown>
                 </div>
               </div>
 
-              <!-- FAN MODES -->
-              <div class="content-row flex flex-col">
-                <div class="category">
-                  Fan Mode
-                </div>
-                <div class="modes-wrapper flex flex-row space-between">
-                ${this.renderFanModes(this.tempEntity?.attributes)}
-                </div>
-              </div>
+              <!-- FAN/AUX_HEAT -->
+              <div class="content-row flex flex-row col-gap-8">
 
-              <!-- OLD CONTENT -->
-              <div class="temp-pop-up">
-                <div class="temp-pop-up--grid flex flex-row space-between justify-start">
-                  <div class="love-ha-name-grid love-ha-name love-ha-name--start ellipsis">
-                    Basic Card Example
+                <!-- FAN MODES -->
+                ${this.tempEntity?.attributes.fan_modes
+                ? html`
+                  <div class="flex-1">
+                    <div class="category">
+                      Fan Mode
+                    </div>
+                    <div class="modes-wrapper flex flex-row space-between">
+                      <ha-fan-modes
+                        .hass=${this.hass}
+                        .config=${this.config}
+                      ></ha-fan-modes>
+                    </div>
                   </div>
+                ` : null}
 
-                </div>
+                <!-- AUX_HEAT -->
+                ${this.tempEntity?.attributes.aux_heat
+                ? html`
+                  <div class="flex-1">
+                    <div class="category">
+                      Aux Heat
+                    </div>
+                    <div class="modes-wrapper flex flex-row space-between">
+                      <ha-honeywell-auxheat
+                        .hass=${this.hass}
+                        .config=${this.config}
+                      ></ha-honeywell-auxheat>
+                    </div>
+                  </div>
+                `
+                : null }
 
-                <div class="temp-pop-up--modes flex flex-row space-between">
-                  <ha-custom-button>
-                    <h1>TITLE</h1>
-                    <ha-icon
-                    id="ha-icon-1"
-                    icon="mdi:fire"></ha-icon>
-                  </ha-custom-button>
-                </div>
               </div>
-              <div class="love-ha-temp-container">
-                <ha-icon-button
-                  dialogAction="close"
-                >
-                  <ha-icon
-                  id="ha-icon"
-                  icon="mdi:chevron-down"></ha-icon>
-                </ha-icon-button>
-                <ha-icon-button
-                >
-                  <ha-icon
-                  id="ha-icon"
-                  icon="mdi:close"></ha-icon>
-                </ha-icon-button>
-              </div>
+
             </div>
             <slot></slot>
           </ha-card>
@@ -204,36 +202,6 @@ export class HaCustomPopup extends LitElement {
     return `
 
     `
-  }
-
-  private renderPresetSelect() {
-
-    return html`
-      <ha-select
-        naturalMenuWidth
-        .value=${this.value}
-        @selected=${this._changed}
-        >
-
-        ${this.tempEntity?.attributes.preset_modes
-          .map((mode, index) =>
-              html`<mwc-list-item tabindex=${index} role="option" .value=${mode}>${mode}</mwc-list-item>`
-          )}
-
-      </ha-select>
-    `
-  }
-
-  private _changed(ev): void {
-    if (!this.hass || ev.target.value === "") {
-      return;
-    }
-    this.value = ev.target.value;
-
-    this.hass.callService("climate", "set_preset_mode", {
-      entity_id: this.config.entity,
-      preset_mode: this.value
-    });
   }
 
   private _showError(error: string): TemplateResult {
@@ -252,6 +220,9 @@ export class HaCustomPopup extends LitElement {
 
       ha-select{
         width: 100%;
+      }
+      .col-gap-8{
+        column-gap: 8px;
       }
       :host{
         background: #00000000;

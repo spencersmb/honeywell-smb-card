@@ -18,6 +18,9 @@ export default {
     'src/utils.ts',
     'src/components/controls.ts',
     'src/components/hvacModes.ts',
+    'src/components/presetsDropDown.ts',
+    'src/components/fanModes.ts',
+    'src/components/auxHeat.ts',
   ],
   output: {
     dir: './dist',

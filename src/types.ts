@@ -28,13 +28,19 @@ export interface HoneywellConfig extends HassEntityAttributeBase {
   hvac_modes : string[] //'off', 'heat', 'cool', 'heat_cool'
   max_temp : number
   min_temp : number
-  preset_mode : "PermanentHold" | 'TemporaryHold' | 'HoldUntil' | 'NoHold' | 'VacationHold'
+  preset_mode : string
   preset_modes : string[]
   supported_features : number
   target_temp_high : null | number
   target_temp_low : null | number
   current_temperature?: number
   temperature?: number
+  fan_modes?: string[]
+  fan_mode?: string
+  fan?: string
+  aux_heat?: string
+  humidity?: number
+  current_humidity?: number
 }
 
 export type HoneywellProps = HoneywellConfig & { [key: string]: any; }

@@ -5,6 +5,11 @@ import { HomeAssistant } from "custom-card-helpers/dist/types";
 import { localize } from "../localize/localize";
 import { getModeOptions, cssUtils } from "../utils";
 
+// Temperature Controls:
+// Display Single control or dual Controls if Heat_Cool is seleced.
+// If Heat_Cool is selected temp control becomes local with a master button
+// to SET both temps at the same time.
+
 @customElement("ha-temp-controls")
 export class HaTempControls extends LitElement {
   @property() config: BoilerplateCardConfig;
@@ -24,6 +29,8 @@ export class HaTempControls extends LitElement {
     this.config = config
   }
 
+  // ON first load
+  // Set the local target temps to what HASS has them set to start off as
   connectedCallback() {
     super.connectedCallback();
     if (!this.config.entity) return
@@ -37,7 +44,7 @@ export class HaTempControls extends LitElement {
   }
 
   protected shouldUpdate(changedProps: PropertyValues): boolean {
-
+    // Should update on mode change or temp change or targetTemp
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const tmp = changedProps
     return true
@@ -48,6 +55,7 @@ export class HaTempControls extends LitElement {
     if (this.config.show_error || !this.config.entity) {
       return this._showError(localize('common.show_error'));
     }
+
 
     this.entity = this.hass.states[this.config.entity] as HoneywellEntity
 
@@ -79,7 +87,7 @@ export class HaTempControls extends LitElement {
 
     const hvacStatus = getModeOptions(this.entity.state)
     return this.buildControls({
-      temperature: this.entity.attributes.temperature,
+      temperature: this.entity.state === 'off' ? this.entity.attributes.current_temperature : this.entity.attributes.temperature,
       textColor: `text-${hvacStatus.color}`,
       hvacMode: this.entity.state as HvacModes,
       hvac_mode_text: hvacStatus.hvacText,
@@ -145,6 +153,9 @@ export class HaTempControls extends LitElement {
     }
   }
 
+  // Target vs hvacMode
+  // Need the option to independantly set target heat and target cool while still
+  // targeting mode:heat_cool
   private buildControls(controlProps: IControlProps) {
     const temp = controlProps.temperature ? controlProps.temperature : 0
     return html`
@@ -156,7 +167,8 @@ export class HaTempControls extends LitElement {
         <div class="temp-ctrls flex flex-row space-between items-center">
           <div class="temp-ctrls--btn">
             <ha-icon-button
-              class="temp-ctrls--btn"
+              class=""
+              aria-disabled=${controlProps.hvacMode === 'off'}
               @click=${controlProps.handleClick({
                 hvacMode: controlProps.hvacMode,
                 target: controlProps.target,
@@ -173,7 +185,8 @@ export class HaTempControls extends LitElement {
           <div
             class="temp-ctrls--btn">
             <ha-icon-button
-              class="temp-ctrls--btn"
+              class=""
+              aria-disabled=${controlProps.hvacMode === 'off'}
               @click=${controlProps.handleClick({
                 hvacMode: controlProps.hvacMode,
                 target: controlProps.target,
@@ -246,10 +259,10 @@ export class HaTempControls extends LitElement {
       .temp-ctrls--btn ha-icon{
         display: flex;
       }
-      .temp-ctrls--btn[aria-disabled="true"] {
+      .temp-ctrls--btn ha-icon-button[aria-disabled="true"] {
         background: rgba(var(--color-theme),0.02);
       }
-      .temp-ctrls--btn[aria-disabled="true"] ha-icon{
+      .temp-ctrls--btn ha-icon-button[aria-disabled="true"] ha-icon{
         opacity: .2;
       }
       .temp-ctrls--btn{

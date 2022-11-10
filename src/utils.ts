@@ -29,7 +29,7 @@ export const getModeOptions = (mode: string) => {
         icon: "mdi:power",
         name: "Off",
         color: "yellow",
-        hvacText: "HVAC Off"
+        hvacText: "Current Temperature"
       }
     default:
       return {
@@ -37,6 +37,29 @@ export const getModeOptions = (mode: string) => {
         name: "None",
         color: "none",
         hvacText: "None Selected"
+      }
+  }
+}
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const getFanModeOptions = (mode: string) => {
+  switch (mode) {
+    case 'auto':
+      return {
+        icon: "mdi:fan-auto",
+        name: "Auto",
+        color: "blue",
+      }
+    case 'on':
+      return {
+        icon: "mdi:fan",
+        name: "On",
+        color: "blue",
+      }
+    default:
+      return {
+        icon: "mdi:help",
+        name: "Not Found",
+        color: "yellow",
       }
   }
 }
@@ -81,6 +104,9 @@ export const cssUtils = css`
   }
   .w-full{
     width: 100%;
+  }
+  .col-gap-8{
+    column-gap: 8px;
   }
 `
 
