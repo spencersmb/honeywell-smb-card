@@ -41,7 +41,7 @@ export const getModeOptions = (mode: string) => {
   }
 }
 
-export const testStyles = css`
+export const cssUtils = css`
   .justify-start {
     justify-content: start;
   }

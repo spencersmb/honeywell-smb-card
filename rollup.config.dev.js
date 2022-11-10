@@ -10,7 +10,15 @@ import { ignoreSelectFiles } from './elements/ignore/select';
 import { ignoreSwitchFiles } from './elements/ignore/switch';
 
 export default {
-  input: ['src/boilerplate-card.ts', 'src/customButton.ts', 'src/et-pop-up.ts', 'src/modes-card.ts', "src/components/controls.ts", "src/utils.ts"],
+  input: [
+    'src/boilerplate-card.ts',
+    'src/customButton.ts',
+    'src/et-pop-up.ts',
+    'src/modes-card.ts',
+    'src/utils.ts',
+    'src/components/controls.ts',
+    'src/components/hvacModes.ts',
+  ],
   output: {
     dir: './dist',
     format: 'es',

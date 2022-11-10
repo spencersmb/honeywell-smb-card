@@ -1,11 +1,9 @@
 import { css, CSSResultGroup, html, LitElement, PropertyValues, TemplateResult } from "lit";
-import { customElement, eventOptions, property, queryAsync, state } from "lit/decorators";
-import { Ripple } from '@material/mwc-ripple';
-import { RippleHandlers } from '@material/mwc-ripple/ripple-handlers';
+import { customElement, property, state } from "lit/decorators";
 import { BoilerplateCardConfig, HoneywellEntity, HvacModes, IControlProps, ITargetTempsState, ITempClickOptions } from "../types";
 import { HomeAssistant } from "custom-card-helpers/dist/types";
 import { localize } from "../localize/localize";
-import { getModeOptions, testStyles } from "../utils";
+import { getModeOptions, cssUtils } from "../utils";
 
 @customElement("ha-temp-controls")
 export class HaTempControls extends LitElement {
@@ -239,7 +237,7 @@ export class HaTempControls extends LitElement {
       .temp-ctrls--desc{
         font-weight: bold;
         margin-bottom: 8px;
-
+        text-align: center;
       }
       .temp-ctrls--btn ha-icon-button{
         background: rgba(var(--color-theme),0.05);
@@ -270,7 +268,7 @@ export class HaTempControls extends LitElement {
       .button-wrapper .temp-btn-lg{
         --ha-card-border-radius: 12px;
       }
-      ${testStyles}
+      ${cssUtils}
   `;
   }
 

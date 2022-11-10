@@ -5,6 +5,8 @@ import { customElement, eventOptions, property, query, queryAsync, state } from 
 import { localize } from "./localize/localize";
 import { BoilerplateCardConfig, HoneywellConfig, HoneywellEntity, HvacModes, IControlProps, ITargetTempsState, ITempClickOptions } from "./types";
 import './components/controls'
+import './components/hvacModes'
+import { getModeOptions } from "./utils";
 
 @customElement("ha-custom-popup")
 export class HaCustomPopup extends LitElement {
@@ -127,9 +129,11 @@ export class HaCustomPopup extends LitElement {
                 <div class="category">
                   Modes
                 </div>
-                <div class="modes-wrapper flex flex-row space-between">
-                ${this.renderModes(this.tempEntity?.attributes)}
-                </div>
+                <ha-hvac-modes
+                  .hass=${this.hass}
+                  .config=${this.config}
+                >
+                </ha-hvac-modes>
               </div>
 
               <!-- PRESETS -->
@@ -202,36 +206,6 @@ export class HaCustomPopup extends LitElement {
     `
   }
 
-  private renderModes(tempAttributes: HoneywellConfig | undefined) {
-    if(!tempAttributes) return html ``
-
-    // rearrange so heat is first
-    return html`
-      ${tempAttributes.hvac_modes.map((mode, index) => {
-
-        const modeObj = this.getIconForMode(mode)
-        return html`
-          <ha-custom-button
-            id="mode-${index}"
-            class="button-wrapper flex-1 overflow-hidden"
-            selected=${mode === this.tempEntity?.state}
-            color="${modeObj.color}"
-            @click=${this.handleClick(mode)}
-          >
-            <ha-icon
-            id="ha-icon"
-            icon="${modeObj.icon}"></ha-icon>
-
-            <div class="mode-name">
-              ${modeObj.name}
-            </div>
-
-          </ha-custom-button>
-        `
-    })}
-    `
-  }
-
   private renderPresetSelect() {
 
     return html`
@@ -260,62 +234,6 @@ export class HaCustomPopup extends LitElement {
       entity_id: this.config.entity,
       preset_mode: this.value
     });
-  }
-
-  private getIconForMode(mode: string) {
-    switch (mode) {
-      case 'heat_cool':
-        return {
-          icon: "mdi:autorenew",
-          name: "Heat/Cool",
-          color: "green",
-          hvacText: "Heat/Cool"
-        }
-      case 'cool':
-        return {
-          icon: "mdi:snowflake",
-          name: "Cool",
-          color: "blue",
-          hvacText: "Cool To"
-        }
-      case 'heat':
-        return {
-          icon: "mdi:fire",
-          name: "Heat",
-          color: "red",
-          hvacText: "Heat To"
-        }
-      case 'off':
-        return {
-          icon: "mdi:power",
-          name: "Off",
-          color: "yellow",
-          hvacText: "HVAC Off"
-        }
-      default:
-        return {
-          icon: "mdi:help",
-          name: "None",
-          color: "none",
-          hvacText: "None Selected"
-        }
-    }
-  }
-
-  private handleClick(mode: string) {
-
-    return () => {
-      console.log('Mode', mode)
-      if(!this.config.entity) return
-      // const stateObj = this.hass.states[this.config.entity];
-      // const service = stateObj.state === "on" ? "turn_off" : "turn_on";
-
-      this.hass.callService("climate", "set_hvac_mode", {
-        entity_id: this.config.entity,
-        hvac_mode: mode
-      });
-    }
-
   }
 
   private _showError(error: string): TemplateResult {
@@ -377,9 +295,6 @@ export class HaCustomPopup extends LitElement {
         height: auto;
         background: var( --ha-card-background, var(--card-background-color, white) );
       }
-      .modes-wrapper{
-        column-gap: 8px;
-      }
       .temp-btn-lg{
         background: rgba(var(--color-theme),0.05);
         justify-content: center;
@@ -387,10 +302,6 @@ export class HaCustomPopup extends LitElement {
         padding: 16px;
         border-radius: var(--ha-card-border-radius, 4px);
         flex: 1;
-      }
-      .heatCoolContainer{
-        justify-content: space-between;
-        width: 100%;
       }
       .close-btn ha-icon-button{
         background: rgba(var(--color-theme),0.05);
@@ -402,11 +313,7 @@ export class HaCustomPopup extends LitElement {
       .close-btn ha-icon{
         display: flex;
       }
-      .mode-name{
-        font-size: 14px;
-        font-weight: 600;
-        margin-top: 8px;
-      }
+
       .justify-start {
         justify-content: start;
       }
