@@ -10,20 +10,10 @@ import './components/controls'
 export class HaCustomPopup extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
   @state() private config!: BoilerplateCardConfig;
-  @state() private loading = false;
-  // @state() private setHeatChanged = false;
   @state() private value?: string;
-  // @state() private targetTempLow: number | null = null;
-  // @state() private targetTempHigh: number | null = null;
-  @state() private targetTempsState: ITargetTempsState = {
-    targetTempHigh: null,
-    targetTempLow: null,
-    tempsChanged: false
-  };
   @property() open;
   @query("ha-dialog") dialog: any;
   private tempEntity: null | HoneywellEntity = null
-  // @state() _config;
 
   public static getStubConfig(): Record<string, unknown> {
     return {};
@@ -60,16 +50,7 @@ export class HaCustomPopup extends LitElement {
     if (!hass) {
       throw new Error(localize('common.invalid_configuration'));
     }
-    console.log('set new hass')
     this.hass = hass
-
-    if(!this.config.entity) return
-    this.tempEntity = this.hass.states[this.config.entity] as HoneywellEntity
-    this.targetTempsState = {
-      tempsChanged: false,
-      targetTempHigh: this.tempEntity.attributes.target_temp_high || this.tempEntity.attributes.min_temp,
-      targetTempLow: this.tempEntity.attributes.target_temp_low || this.tempEntity.attributes.min_temp
-    }
   }
 
   protected shouldUpdate(changedProps: PropertyValues): boolean {
@@ -79,35 +60,9 @@ export class HaCustomPopup extends LitElement {
     // console.log('should update this', this );
     return true
   }
-  // constructor() {
-  //   super();
-  //   // this.setConfig()
-  // }
-  // connectedCallback() {
-  //   // const config = this.getAttribute('data-config')
-  //   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //   //@ts-ignore
-  //   // const hass: string = this.getAttribute('data-hass')
-  //   // this.hass = JSON.parse(hass)
-  //   // console.log('setCOnfig', this.hass)
-
-  //   const config: string = this.getAttribute('dataconfig')
-  //   const parsed = JSON.parse(config)
-  //   console.log('setCOnfig', this.hass)
-  //   // this.setConfig(parsed)
-  // }
-  // setConfig(config) {
-  //   // this._config = config;
-  //   (async () => {
-  //     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //     // @ts-ignore
-  //     // const ch = await window.loadCardHelpers();
-  //     // this._element = await ch.createCardElement(config.card);
-  //     // this._element.hass = this.hass;
-  //   })();
-  // }
 
   disconnectedCallback() {
+    super.disconnectedCallback()
     console.log('disconnectedCallback')
   }
 
@@ -159,8 +114,6 @@ export class HaCustomPopup extends LitElement {
               <!-- TEMP CONTROLS -->
               <div class="content-row flex flex-col controls justify-center items-center">
 
-                ${this.renderControls()}
-                ${this.renderSetHeatCoolButton()}
                 <ha-temp-controls
                   .hass=${this.hass}
                   .config=${this.config}
@@ -246,183 +199,6 @@ export class HaCustomPopup extends LitElement {
     if (!tempAttributes) return html``
     return `
 
-    `
-  }
-
-  private handleTempClick(options: ITempClickOptions) {
-    return async () => {
-      if(this.loading) return
-      this.loading = true
-      console.log('options', options)
-      if (options.hvacMode === "heat_cool") {
-        const targetTemp = options.target === 'heat'
-          ? { target_temp_low: options.temperature }
-          : { target_temp_high: options.temperature }
-        const serviceOptions = {
-          entity_id: this.config.entity,
-          hvac_mode: options.hvacMode,
-          ...targetTemp
-        }
-        console.log('serviceOptions', serviceOptions)
-        await this.hass.callService("climate", "set_temperature", serviceOptions);
-      } else {
-
-        await this.hass.callService("climate", "set_temperature", {
-          entity_id: this.config.entity,
-          hvac_mode: options.hvacMode,
-          temperature: options.temperature
-        });
-      }
-
-      this.loading = false
-      // console.log('serviceCall', serviceCall)
-    }
-  }
-
-  private handleHeatCoolClick(options: ITempClickOptions) {
-    return () => {
-      if (options.target === 'heat' && options.temperature) {
-        this.targetTempsState = {
-          ...this.targetTempsState,
-          targetTempLow: options.temperature,
-          tempsChanged: true
-        }
-        // console.log('this.targetTempsState', this.targetTempsState)
-      }
-      if (options.target !== 'heat' && options.temperature) {
-        this.targetTempsState = {
-          ...this.targetTempsState,
-          targetTempHigh: options.temperature,
-          tempsChanged: true
-        }
-        // console.log('this.targetTempsState', this.targetTempsState)
-      }
-    }
-  }
-
-  private async setNewHeatCoolTemps() {
-    const options = {
-      entity_id: this.config.entity,
-      hvac_mode: 'heat_cool',
-      target_temp_low: this.targetTempsState.targetTempLow,
-      target_temp_high: this.targetTempsState.targetTempHigh
-    }
-    // console.log('options', options)
-    try {
-      await this.hass.callService("climate", "set_temperature", { ...options });
-      this.targetTempsState = {
-        ...this.targetTempsState,
-        tempsChanged: false
-      }
-    }
-    catch(e: any){
-      console.error('set new heat/cool temps error', e)
-    }
-  }
-
-  private buildControls(controlProps: IControlProps) {
-    const temp = controlProps.temperature ? controlProps.temperature : 0
-    return html`
-      <div class="temp-ctrls--container flex flex-col">
-        <div class=${`temp-ctrls--desc ${controlProps.textColor}`}>
-          ${controlProps.hvac_mode_text}
-        </div>
-
-        <div class="temp-ctrls flex flex-row space-between items-center">
-          <div class="temp-ctrls--btn">
-            <ha-icon-button
-              class="temp-ctrls--btn"
-              @click=${controlProps.handleClick({
-                hvacMode: controlProps.hvacMode,
-                target: controlProps.target,
-                temperature: temp - 1
-              })}>
-              <ha-icon
-              id="ha-icon"
-              icon="mdi:minus"></ha-icon>
-            </ha-icon-button>
-          </div>
-          <div class="temp-ctrls--temperature text-4xl">
-            ${temp}
-          </div>
-          <div
-            class="temp-ctrls--btn">
-            <ha-icon-button
-              class="temp-ctrls--btn"
-              @click=${controlProps.handleClick({
-                hvacMode: controlProps.hvacMode,
-                target: controlProps.target,
-                temperature: temp + 1
-              })}>
-              <ha-icon
-              id="ha-icon"
-              icon="mdi:plus"></ha-icon>
-            </ha-icon-button>
-          </div>
-        </div>
-      </div>
-    `
-  }
-
-  private renderControls() {
-    // PROPS
-    // Temperature
-    // HVAC_MODE TEXT
-    // HVACMODE
-    // TEXT COLOR class
-    // CLICK EVENT
-    if (!this.tempEntity) {
-      return html ``
-    }
-
-    if (this.tempEntity.state === "heat_cool") {
-      return html`
-        <div class="heatCoolContainer flex flex-row">
-          ${this.buildControls({
-            temperature: this.targetTempsState.targetTempLow,
-            textColor: `text-red`,
-            hvacMode: this.tempEntity.state as HvacModes,
-            hvac_mode_text: 'Heat To',
-            handleClick: this.handleHeatCoolClick.bind(this),
-            target: 'heat'
-          })}
-          ${this.buildControls({
-            temperature: this.targetTempsState.targetTempHigh,
-            textColor: `text-blue`,
-            hvacMode: this.tempEntity.state as HvacModes,
-            hvac_mode_text: 'Cool To',
-            handleClick: this.handleHeatCoolClick.bind(this),
-            target: 'cool'
-          })}
-        </div>
-      `
-    }
-
-    const hvacStatus = this.getIconForMode(this.tempEntity.state)
-    return this.buildControls({
-      temperature: this.tempEntity.attributes.temperature,
-      textColor: `text-${hvacStatus.color}`,
-      hvacMode: this.tempEntity.state as HvacModes,
-      hvac_mode_text: hvacStatus.hvacText,
-      handleClick: this.handleTempClick.bind(this),
-      target: this.tempEntity.state as HvacModes
-    })
-  }
-
-  private renderSetHeatCoolButton() {
-    // happens if this is the default starter
-    return html`
-    <div class="w-full setTemp--container">
-      <ha-custom-button
-        ?disabled=${!this.targetTempsState.tempsChanged}
-        class=${`button-wrapper flex-1 overflow-hidden ${!this.targetTempsState.tempsChanged ? 'disabled' : ''}`}
-        selected=${true}
-        color="yellow"
-        @click=${this.setNewHeatCoolTemps}
-      >
-            Set new temps
-      </ha-custom-button>
-    </div>
     `
   }
 
@@ -616,61 +392,24 @@ export class HaCustomPopup extends LitElement {
         justify-content: space-between;
         width: 100%;
       }
-      .temp-ctrls{
-        column-gap: 10px;
-      }
-      .temp-ctrls--container{
-        max-width: 170px;
-      }
-      .temp-ctrls--desc{
-        font-weight: bold;
-        margin-bottom: 8px;
-
-      }
-      .close-btn ha-icon-button,
-      .temp-ctrls--btn ha-icon-button{
+      .close-btn ha-icon-button{
         background: rgba(var(--color-theme),0.05);
         border-radius: 50%;
       }
       .close-btn{
         --mdc-icon-button-size: 34px;
       }
-      .close-btn ha-icon,
-      .temp-ctrls--btn ha-icon{
+      .close-btn ha-icon{
         display: flex;
-      }
-      .temp-ctrls--btn[aria-disabled="true"] {
-        background: rgba(var(--color-theme),0.02);
-      }
-      .temp-ctrls--btn[aria-disabled="true"] ha-icon{
-       opacity: .2;
-      }
-      .temp-ctrls--btn{
-        --mdc-icon-button-size: 54px;
-      }
-      .temp-ctrls--btn .mdc-ripple-surface::after{
-        background-color: transparent;
-      }
-      .controls{
-        text-align: center;
-        margin: 0 auto;
       }
       .mode-name{
         font-size: 14px;
         font-weight: 600;
         margin-top: 8px;
       }
-      .setTemp--container{
-        margin-top: 18px;
-      }
-      .button-wrapper .temp-btn-lg{
-        --ha-card-border-radius: 12px;
-      }
-
       .justify-start {
         justify-content: start;
       }
-
       .justify-center {
         justify-content: center;
       }
