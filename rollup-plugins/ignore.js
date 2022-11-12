@@ -12,7 +12,6 @@ export default function (userOptions = {}) {
 
   return {
     name: 'ignore',
-
     load(id) {
       return files.some((toIgnorePath) => id.startsWith(toIgnorePath))
         ? {

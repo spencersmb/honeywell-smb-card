@@ -21,6 +21,7 @@ export default {
     'src/components/presetsDropDown.ts',
     'src/components/fanModes.ts',
     'src/components/auxHeat.ts',
+    'src/components/humidity.ts',
   ],
   output: {
     dir: './dist',
@@ -44,7 +45,10 @@ export default {
       },
     }),
     ignore({
-      files: [...ignoreTextfieldFiles, ...ignoreSelectFiles, ...ignoreSwitchFiles].map((file) => require.resolve(file)),
+      files: [
+        ...ignoreTextfieldFiles,
+        ...ignoreSelectFiles,
+        ...ignoreSwitchFiles].map((file) => require.resolve(file)),
     }),
   ],
 };

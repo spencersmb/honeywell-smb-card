@@ -9,6 +9,7 @@ import './components/hvacModes'
 import './components/presetsDropDown'
 import './components/fanModes'
 import './components/auxHeat'
+import './components/humidity'
 import { getModeOptions } from "./utils";
 
 @customElement("ha-custom-popup")
@@ -16,6 +17,7 @@ export class HaCustomPopup extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
   @state() private config!: BoilerplateCardConfig;
   @property() open;
+  @state() browser = '';
   @state() private tempEntity: null | HoneywellEntity = null
 
   public static getStubConfig(): Record<string, unknown> {
@@ -35,18 +37,15 @@ export class HaCustomPopup extends LitElement {
     this.config = {
       ...config,
     };
+    const ua = window.navigator.userAgent
+    const event = ua.match(/iPad/i) || ua.match(/iPhone/) ? "touchstart" : "click";
+    // alert(ua)
 
-    this.addEventListener("click", this.handleOutsideModalClick.bind(this));
+    // this.addEventListener("click", this.handleOutsideModalClick.bind(this));
   }
 
   public handleOutsideModalClick(e: any) {
-    const path = e.path
-    // console.log('listend to check event');
-    // console.log(path[0].tagName);
-    // console.log(path[0].tagName === "HA-CUSTOM-POPUP")
-      if (path[0].tagName === "HA-CUSTOM-POPUP") {
-        this.close()
-      }
+    this.close()
   }
 
   public setHass(hass: any): void{
@@ -62,11 +61,6 @@ export class HaCustomPopup extends LitElement {
     const tmp = changedProps
     // console.log('should update this', this );
     return true
-  }
-
-  disconnectedCallback() {
-    super.disconnectedCallback()
-    console.log('disconnectedCallback')
   }
 
   closeDialog() {
@@ -111,6 +105,15 @@ export class HaCustomPopup extends LitElement {
                   </ha-icon-button>
                 </div>
 
+              </div>
+
+              <div class="content-row flex flex-col">
+                <div class="category">
+                  USER
+                </div>
+                <div>
+                  ${this.browser}
+                </div>
               </div>
 
               <!-- TEMP CONTROLS -->
@@ -187,9 +190,30 @@ export class HaCustomPopup extends LitElement {
 
               </div>
 
+               <!-- Humidity -->
+              <div class="content-row flex flex-col">
+                ${this.tempEntity?.attributes.humidity
+                ? html`
+                  <div class="category">
+                    Humidity
+                  </div>
+                  <ha-honeywell-humidity
+                    .hass=${this.hass}
+                    .config=${this.config}
+                  >
+                  </ha-honeywell-humidity>
+                `
+                : null
+                }
+              </div>
             </div>
             <slot></slot>
           </ha-card>
+          <ha-card
+            @click=${this.handleOutsideModalClick}
+            id="tmp-overlay"
+            class="overlay-popup"
+          ></ha-card>
     `;
   }
 
@@ -236,7 +260,14 @@ export class HaCustomPopup extends LitElement {
         background: #0000009c;
         width: 100%;
         height: 100%;
+        position: fixed;
+        z-index: 99999;
+      }
+      .overlay-popup{
         position: absolute;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
       }
       .header{
         margin-bottom: 18px;
@@ -264,6 +295,7 @@ export class HaCustomPopup extends LitElement {
         position: absolute;
         width: 100%;
         height: auto;
+        z-index: 2;
         background: var( --ha-card-background, var(--card-background-color, white) );
       }
       .temp-btn-lg{

@@ -39,6 +39,7 @@ console.info(
 });
 
 // TODO Name your custom element
+// local/community/honeywell-card/boilerplate-card.js
 @customElement('boilerplate-card')
 export class BoilerplateCard extends LitElement {
 

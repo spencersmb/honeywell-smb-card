@@ -41,6 +41,8 @@ export interface HoneywellConfig extends HassEntityAttributeBase {
   aux_heat?: string
   humidity?: number
   current_humidity?: number
+  min_humidity?: number
+  max_humidity?: number
 }
 
 export type HoneywellProps = HoneywellConfig & { [key: string]: any; }
@@ -82,4 +84,10 @@ export interface ITargetTempsState {
   targetTempLow: number | null
   targetTempHigh: number | null
   tempsChanged: boolean
+}
+
+export interface buildInputProps {
+  min_humidity: number,
+  max_humidity: number,
+  humidity: number
 }
