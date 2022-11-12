@@ -5,93 +5,63 @@ A minimalist card design with pop-up settings for Honeywell Thermostats.
 
 [![GitHub Release][releases-shield]][releases]
 
-[![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg?style=for-the-badge)](https://github.com/custom-components/hacs)
+[![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg?style=for-the-badge)](https://github.com/hacs/integration)
 
 ![Project Maintenance][maintenance-shield]
+
 [![GitHub Activity][commits-shield]][commits]
-
-[![Discord][discord-shield]][discord]
-[![Community Forum][forum-shield]][forum]
-
-## Support
-
-Hey dude! Help me out for a couple of :beers: or a :coffee:!
-
-[![coffee](https://www.buymeacoffee.com/assets/img/custom_images/black_img.png)](https://www.buymeacoffee.com/zJtVxUAgH)
-
 ## Options
 
-| Name              | Type    | Requirement  | Description                                 | Default             |
-| ----------------- | ------- | ------------ | ------------------------------------------- | ------------------- |
-| type              | string  | **Required** | `custom:boilerplate-card`                   |
-| name              | string  | **Optional** | Card name                                   | `Boilerplate`       |
-| show_error        | boolean | **Optional** | Show what an error looks like for the card  | `false`             |
-| show_warning      | boolean | **Optional** | Show what a warning looks like for the card | `false`             |
-| entity            | string  | **Optional** | Home Assistant entity ID.                   | `none`              |
-| tap_action        | object  | **Optional** | Action to take on tap                       | `action: more-info` |
-| hold_action       | object  | **Optional** | Action to take on hold                      | `none`              |
-| double_tap_action | object  | **Optional** | Action to take on double tap                | `none`              |
+| Name              | Type    | Requirement  | Description                          | Default     |
+| ----------------- | ------- |--------------|--------------------------------------| ----------- |
+| type              | string  | **Required** | `custom:honeywell-smb-card`          |
+| name              | string  | **Required** | Floor Level Name |
+| entity            | string  | **Required** | Home Assistant entity ID.|
 
-## Action Options
-
-| Name            | Type   | Requirement  | Description                                                                                                                            | Default     |
-| --------------- | ------ | ------------ | -------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
-| action          | string | **Required** | Action to perform (more-info, toggle, call-service, navigate url, none)                                                                | `more-info` |
-| navigation_path | string | **Optional** | Path to navigate to (e.g. /lovelace/0/) when action defined as navigate                                                                | `none`      |
-| url             | string | **Optional** | URL to open on click when action is url. The URL will open in a new tab                                                                | `none`      |
-| service         | string | **Optional** | Service to call (e.g. media_player.media_play_pause) when action defined as call-service                                               | `none`      |
-| service_data    | object | **Optional** | Service data to include (e.g. entity_id: media_player.bedroom) when action defined as call-service                                     | `none`      |
-| haptic          | string | **Optional** | Haptic feedback _success, warning, failure, light, medium, heavy, selection_ | `none`      |
-| repeat          | number | **Optional** | How often to repeat the `hold_action` in milliseconds.                                                                                 | `none`       |
-
-## Starting a new card from boilerplate-card
+## HACS Installation
 
 ### Step 1
 
-Click the "Use this template" button on the main page and clone the new repository to your machine
+Make sure the [HACS](https://github.com/hacs/integration) component is installed and working.
 
 ### Step 2
 
-Install necessary modules (verified to work in node 8.x)
-`yarn install` or `npm install`
+Search for `honeywell-smb-card` and add it through HACS
 
 ### Step 3
 
-Do a test lint & build on the project. You can see available scripts in the package.json
-`npm run build`
+The next step is to register these resources with the Home Assistant interface. This is done by navigating to the Resources page by following below link:
+
+![HACS Integration](https://my.home-assistant.io/badges/lovelace_resources.svg)
+
+- Add Resource
+- url: `/hacsfiles/honeywell-smb-card/honeywell-smb-card.js`
+- Select `JavaScript Module` as the Resource Type
+- Click `Create`
 
 ### Step 4
 
-Search the repository for all instances of "TODO" and handle the changes/suggestions
+Refresh home-assistant.
 
-### Step 5
+## Manual Installation
 
-Customize to suit your needs and contribute it back to the community
+### Step 1
 
-## Starting a new card from boilerplate-card with [devcontainer][devcontainer]
+Vist the [honeywell-smb-card](https://github.com/spencersmb/custom-etha-honeywell-card/releases) and download `Honeywell-SMB-Card.zip`
 
-Note: this is available only in vscode ensure you have the [Remote Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension installed.
+### Step 2
 
-1. Fork and clone the repository.
-2. Open a [devcontainer][devcontainer] terminal and run `npm start` when it's ready.
-3. The compiled `.js` file will be accessible on
-   `http://127.0.0.1:5000/boilerplate-card.js`.
-4. On a running Home Assistant installation add this to your Lovelace
-   `resources:`
+Open the zip and copy the 3 js files to `www/community/honeywell-smb-card` folder in your Home Assistant configuration directory.
 
-```yaml
-- url: 'http://127.0.0.1:5000/boilerplate-card.js'
-  type: module
-```
+### Step 3
 
-_Change "127.0.0.1" to the IP of your development machine._
+The next step is to register these resources with the Home Assistant interface. This is done by navigating to the Resources page by following below link:
 
-### Bonus
-
-If you need a fresh test instance you can install a fresh Home Assistant instance inside the devcontainer as well.
-
-1. Run the command `container start`.
-2. Home Assistant will install and will eventually be running on port `9123`
+![HACS Integration](https://my.home-assistant.io/badges/lovelace_resources.svg)
+- Add Resource
+- url: `local/community/honeywell-smb-card/honeywell-smb-card.js`
+- Select `JavaScript Module` as the Resource Type
+- Click `Create`
 
 ## [Troubleshooting](https://github.com/thomasloven/hass-config/wiki/Lovelace-Plugins)
 
@@ -107,13 +77,14 @@ error Found incompatible module
 info Visit https://yarnpkg.com/en/docs/cli/install for documentation about this command.
 ```
 
-[commits-shield]: https://img.shields.io/github/commit-activity/y/custom-cards/boilerplate-card.svg?style=for-the-badge
-[commits]: https://github.com/custom-cards/boilerplate-card/commits/master
+[commits-shield]: https://img.shields.io/github/commit-activity/m/spencersmb/custom-etha-honeywell-card/main.svg?style=for-the-badge
+
+[commits]: https://github.com/spencersmb/custom-etha-honeywell-card/commits/main
 [devcontainer]: https://code.visualstudio.com/docs/remote/containers
 [discord]: https://discord.gg/5e9yvq
 [discord-shield]: https://img.shields.io/discord/330944238910963714.svg?style=for-the-badge
 [forum-shield]: https://img.shields.io/badge/community-forum-brightgreen.svg?style=for-the-badge
 [forum]: https://community.home-assistant.io/c/projects/frontend
-[maintenance-shield]: https://img.shields.io/maintenance/yes/2021.svg?style=for-the-badge
-[releases-shield]: https://img.shields.io/github/release/custom-cards/boilerplate-card.svg?style=for-the-badge
-[releases]: https://github.com/custom-cards/boilerplate-card/releases
+[maintenance-shield]: https://img.shields.io/maintenance/yes/2022.svg?style=for-the-badge
+[releases-shield]: https://img.shields.io/github/v/release/spencersmb/custom-etha-honeywell-card?style=for-the-badge&display_name=release&include_prereleases
+[releases]: https://github.com/spencersmb/custom-etha-honeywell-card/releases

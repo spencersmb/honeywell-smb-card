@@ -1,5 +1,6 @@
 {
-    "name": "Boilerplate Card",
+    "name": "Honeywell SMB Card",
     "render_readme": true,
-    "filename": "boilerplate-card.js"
+    "filename": "honeywell-smb-card.js",
+    "content_in_root": false
 }

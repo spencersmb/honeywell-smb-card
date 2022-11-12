@@ -11,7 +11,7 @@ import {
   getLovelace,
 } from 'custom-card-helpers'; // This is a community maintained npm module with common helper functions/types. https://github.com/custom-cards/custom-card-helpers
 
-import type { BoilerplateCardConfig, HoneywellConfig, HoneywellEntity } from './types';
+import type { HoneywellCardConfig, HoneywellConfig, HoneywellEntity } from './types';
 import { actionHandler } from './action-handler-directive';
 import { CARD_VERSION } from './const';
 import { localize } from './localize/localize';
@@ -39,7 +39,7 @@ export class HAHWSelectCard extends LitElement {
 
   public static async getConfigElement(): Promise<LovelaceCardEditor> {
     await import('./editor');
-    return document.createElement('boilerplate-card-editor');
+    return document.createElement('honeywell-smb-card-editor');
   }
 
 
@@ -51,10 +51,10 @@ export class HAHWSelectCard extends LitElement {
   // https://lit.dev/docs/components/properties/
   @property({ attribute: false }) public hass!: HomeAssistant;
 
-  @state() private config!: BoilerplateCardConfig;
+  @state() private config!: HoneywellCardConfig;
 
   // https://lit.dev/docs/components/properties/#accessors-custom
-  public setConfig(config: BoilerplateCardConfig): void {
+  public setConfig(config: HoneywellCardConfig): void {
     // TODO Check for required fields and that they are of the proper format
     if (!config) {
       throw new Error(localize('common.invalid_configuration'));

@@ -3,7 +3,7 @@ import { HomeAssistant } from "custom-card-helpers/dist/types";
 import { css, CSSResultGroup, html, LitElement, PropertyValues, TemplateResult } from "lit";
 import { customElement, eventOptions, property, query, queryAsync, state } from "lit/decorators";
 import { localize } from "./localize/localize";
-import { BoilerplateCardConfig, HoneywellConfig, HoneywellEntity, HvacModes, IControlProps, ITargetTempsState, ITempClickOptions } from "./types";
+import { HoneywellCardConfig, HoneywellConfig, HoneywellEntity, HvacModes, IControlProps, ITargetTempsState, ITempClickOptions } from "./types";
 import './components/controls'
 import './components/hvacModes'
 import './components/presetsDropDown'
@@ -15,7 +15,7 @@ import { getModeOptions } from "./utils";
 @customElement("ha-custom-popup")
 export class HaCustomPopup extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
-  @state() private config!: BoilerplateCardConfig;
+  @state() private config!: HoneywellCardConfig;
   @property() open;
   @state() browser = '';
   @state() private tempEntity: null | HoneywellEntity = null
@@ -24,7 +24,7 @@ export class HaCustomPopup extends LitElement {
     return {};
   }
 
-  public setConfig(config: BoilerplateCardConfig): void {
+  public setConfig(config: HoneywellCardConfig): void {
     // TODO Check for required fields and that they are of the proper format
     if (!config) {
       throw new Error(localize('common.invalid_configuration'));
@@ -44,7 +44,7 @@ export class HaCustomPopup extends LitElement {
     // this.addEventListener("click", this.handleOutsideModalClick.bind(this));
   }
 
-  public handleOutsideModalClick(e: any) {
+  public handleOutsideModalClick() {
     this.close()
   }
 

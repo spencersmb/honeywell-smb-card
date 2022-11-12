@@ -1,6 +1,6 @@
 import { css, CSSResultGroup, html, LitElement, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators";
-import { BoilerplateCardConfig, HoneywellEntity, HvacModes, IControlProps, ITargetTempsState, ITempClickOptions } from "../types";
+import { HoneywellCardConfig, HoneywellEntity, HvacModes, IControlProps, ITargetTempsState, ITempClickOptions } from "../types";
 import { HomeAssistant } from "custom-card-helpers/dist/types";
 import { localize } from "../localize/localize";
 import { getModeOptions, cssUtils } from "../utils";
@@ -12,7 +12,7 @@ import { getModeOptions, cssUtils } from "../utils";
 
 @customElement("ha-temp-controls")
 export class HaTempControls extends LitElement {
-  @property() config: BoilerplateCardConfig;
+  @property() config: HoneywellCardConfig;
   @property() hass: HomeAssistant;
   @state() loading = false
   @state() hasInitialized = false
@@ -23,7 +23,7 @@ export class HaTempControls extends LitElement {
     tempsChanged: false
   };
 
-  constructor(config: BoilerplateCardConfig, hass: HomeAssistant) {
+  constructor(config: HoneywellCardConfig, hass: HomeAssistant) {
     super();
     this.hass = hass
     this.config = config

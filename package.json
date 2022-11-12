@@ -1,5 +1,5 @@
 {
-  "name": "boilerplate-card",
+  "name": "honeywell-smb-card",
   "version": "0.1.0",
   "description": "Honeywell Thermostat Lovelace UI Card",
   "keywords": [
@@ -10,7 +10,7 @@
     "lovelace",
     "custom-cards"
   ],
-  "module": "boilerplate-card.js",
+  "module": "honeywell-smb-card.js",
   "repository": "git@github.com:spencersmb/custom-etha-honeywell-card.git",
   "author": "Spencer Bigum <spencer.bigum@gmail.com>",
   "license": "MIT",

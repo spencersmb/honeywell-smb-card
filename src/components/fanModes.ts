@@ -1,6 +1,6 @@
 import { css, CSSResultGroup, html, LitElement, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators";
-import { BoilerplateCardConfig, HoneywellEntity } from "../types";
+import { HoneywellCardConfig, HoneywellEntity } from "../types";
 import { localize } from "../localize/localize";
 import { HomeAssistant } from "custom-card-helpers/dist/types";
 import { cssUtils, getFanModeOptions } from "../utils";
@@ -11,11 +11,11 @@ import { cssUtils, getFanModeOptions } from "../utils";
 @customElement("ha-fan-modes")
 export class HaFanModes extends LitElement {
   @property() hass: HomeAssistant;
-  @property() config: BoilerplateCardConfig;
+  @property() config: HoneywellCardConfig;
 
   @state() entity: HoneywellEntity | undefined
 
-  constructor(config: BoilerplateCardConfig, hass: HomeAssistant) {
+  constructor(config: HoneywellCardConfig, hass: HomeAssistant) {
     super();
     this.config = config
     this.hass = hass

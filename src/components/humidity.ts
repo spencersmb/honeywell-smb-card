@@ -1,6 +1,6 @@
 import { css, CSSResultGroup, html, LitElement, PropertyValues, TemplateResult } from "lit";
 import { customElement, property, state } from "lit/decorators";
-import { BoilerplateCardConfig, buildInputProps, HoneywellEntity } from "../types";
+import { HoneywellCardConfig, buildInputProps, HoneywellEntity } from "../types";
 import { localize } from "../localize/localize";
 import { HomeAssistant } from "custom-card-helpers/dist/types";
 import { cssUtils, getFanModeOptions } from "../utils";
@@ -12,12 +12,12 @@ import RangeTouch from 'rangetouch';
 @customElement("ha-honeywell-humidity")
 export class HaHoneywellHumidity extends LitElement {
   @property() hass: HomeAssistant;
-  @property() config: BoilerplateCardConfig;
+  @property() config: HoneywellCardConfig;
   @state() entity: HoneywellEntity | undefined
   @state() value = 50 // used for local testing
   @state() liveValue = 50 // used for local testing
   @state() input: null | HTMLInputElement = null
-  constructor(config: BoilerplateCardConfig, hass: HomeAssistant) {
+  constructor(config: HoneywellCardConfig, hass: HomeAssistant) {
     super();
     this.config = config
     this.hass = hass

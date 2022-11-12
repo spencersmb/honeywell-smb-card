@@ -12,7 +12,7 @@ import {
   fireEvent,
 } from 'custom-card-helpers'; // This is a community maintained npm module with common helper functions/types. https://github.com/custom-cards/custom-card-helpers
 
-import type { BoilerplateCardConfig, HADialog, HoneywellConfig, HoneywellEntity, HoneywellProps } from './types';
+import type { HoneywellCardConfig, HADialog, HoneywellConfig, HoneywellEntity, HoneywellProps } from './types';
 import { actionHandler } from './action-handler-directive';
 import { CARD_VERSION } from './const';
 import { localize } from './localize/localize';
@@ -25,7 +25,7 @@ import './inputSelect';
 
 /* eslint no-console: 0 */
 console.info(
-  `%c  BOILERPLATE-CARD \n%c  ${localize('common.version')} ${CARD_VERSION}    `,
+  `%c  honeywell-smb-card \n%c  ${localize('common.version')} ${CARD_VERSION}    `,
   'color: orange; font-weight: bold; background: black',
   'color: white; font-weight: bold; background: dimgray',
 );
@@ -33,15 +33,15 @@ console.info(
 // This puts your card into the UI card picker dialog
 (window as any).customCards = (window as any).customCards || [];
 (window as any).customCards.push({
-  type: 'boilerplate-card',
-  name: 'Boilerplate Card',
+  type: 'honeywell-smb-card',
+  name: 'Honeywell SMB Card',
   description: 'A template custom card for you to create something awesome',
 });
 
 // TODO Name your custom element
-// local/community/honeywell-card/boilerplate-card.js
-@customElement('boilerplate-card')
-export class BoilerplateCard extends LitElement {
+// local/community/honeywell-card/honeywell-smb-card.js
+@customElement('honeywell-smb-card')
+export class HoneywellCard extends LitElement {
 
   private dialogEl: null | HADialog = null
   private isDialogOpen = false
@@ -51,7 +51,7 @@ export class BoilerplateCard extends LitElement {
 
   public static async getConfigElement(): Promise<LovelaceCardEditor> {
     await import('./editor');
-    return document.createElement('boilerplate-card-editor');
+    return document.createElement('honeywell-smb-card-editor');
   }
 
   public static getStubConfig(): Record<string, unknown> {
@@ -62,12 +62,12 @@ export class BoilerplateCard extends LitElement {
   // https://lit.dev/docs/components/properties/
   @property({ attribute: false }) public hass!: HomeAssistant;
 
-  @state() private config!: BoilerplateCardConfig;
+  @state() private config!: HoneywellCardConfig;
 
   @queryAsync('mwc-ripple') private _ripple!: Promise<Ripple | null>;
 
   // https://lit.dev/docs/components/properties/#accessors-custom
-  public setConfig(config: BoilerplateCardConfig): void {
+  public setConfig(config: HoneywellCardConfig): void {
     // TODO Check for required fields and that they are of the proper format
     if (!config) {
       throw new Error(localize('common.invalid_configuration'));
@@ -106,22 +106,6 @@ export class BoilerplateCard extends LitElement {
   renderPopUp() {
     // Check is el is already loaded into the DOM
     // IF so just update config and hass
-    // const isElLoaded = document.querySelector('ha-custom-popup')
-
-    // if (!isElLoaded) {
-    //   const customEl = document.createElement("ha-custom-popup");
-    //   customEl ? document.body.append(customEl) : null
-    //   this._popupEl = document.querySelector('ha-custom-popup')
-    //   this._popupEl?.setConfig(this.config)
-    //   this._popupEl?.setHass(this.hass)
-    //   this._popupEl ? this._popupEl.setAttribute('open', 'false') : null
-    //   this.loaded = true
-
-    // } else {
-    //   // isElLoaded.setConfig(this.config)
-    //   // isElLoaded.setHass(this.hass)
-    // }
-
     const id = this.config.entity?.replace('.', '-')
     const lookup:any = document.querySelector(`#${id}`)
 

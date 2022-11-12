@@ -11,7 +11,7 @@ import { ignoreSwitchFiles } from './elements/ignore/switch';
 
 export default {
   input: [
-    'src/boilerplate-card.ts',
+    'src/honeywell-smb-card.ts',
     'src/customButton.ts',
     'src/et-pop-up.ts',
     'src/modes-card.ts',

@@ -39,7 +39,7 @@ const plugins = [
 
 export default [
   {
-    input: 'src/boilerplate-card.ts',
+    input: 'src/honeywell-smb-card.ts',
     output: {
       dir: 'dist',
       format: 'es',
