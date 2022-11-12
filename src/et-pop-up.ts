@@ -252,7 +252,7 @@ export class HaCustomPopup extends LitElement {
         background: #00000000;
         width: 0;
         height: 0;
-        position: absolute;
+        position: fixed;
         --mdc-ripple-focus-opacity: 0;
         --mdc-ripple-hover-opacity: 0;
       }
