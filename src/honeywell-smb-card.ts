@@ -45,7 +45,6 @@ export class HoneywellCard extends LitElement {
   private dialogEl: null | HADialog = null
   private isDialogOpen = false
   private tempEntity: null | HoneywellEntity = null
-  private loaded = false
   private _popupEl: any = null
 
   public static async getConfigElement(): Promise<LovelaceCardEditor> {
