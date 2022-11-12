@@ -17,6 +17,9 @@ jobs:
               uses: softprops/action-gh-release@v1
               if: startsWith(github.ref, 'refs/tags/')
               with:
-                  draft: true
-                  generate_release_notes: true
-                  files: dist/*.js
+                draft: true
+                type: 'zip'
+                generate_release_notes: true
+                path: dist/*.js
+                filename: 'release.zip'
+                exclusions: '*.git* /*node_modules/* .editorconfig'

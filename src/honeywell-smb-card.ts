@@ -38,7 +38,6 @@ console.info(
   description: 'A template custom card for you to create something awesome',
 });
 
-// TODO Name your custom element
 // local/community/honeywell-card/honeywell-smb-card.js
 @customElement('honeywell-smb-card')
 export class HoneywellCard extends LitElement {
