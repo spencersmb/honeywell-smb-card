@@ -18,8 +18,7 @@ jobs:
               if: startsWith(github.ref, 'refs/tags/')
               with:
                 draft: true
-                type: 'zip'
+                type: zip
                 generate_release_notes: true
                 path: dist/*.js
-                filename: 'release.zip'
-                exclusions: '*.git* /*node_modules/* .editorconfig'
+                filename: release.zip
