@@ -33,7 +33,9 @@ export class HaTempControls extends LitElement {
   // Set the local target temps to what HASS has them set to start off as
   connectedCallback() {
     super.connectedCallback();
-    if (!this.config.entity) return
+    if (!this.config.entity) {
+      throw new Error("You need to define config entity in controls.ts")
+    }
 
     this.entity = this.hass.states[this.config.entity] as HoneywellEntity
     this.targetTempsState = {
