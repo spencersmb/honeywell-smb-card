@@ -48,7 +48,7 @@ export class HaFanModes extends LitElement {
     this.entity = this.hass.states[this.config.entity] as HoneywellEntity
 
     if (!this.entity.attributes.fan_modes || !this.entity.attributes.fan_mode) {
-      return this._showError(localize('common.show_error'));
+      return this._showError('No Fan_modes attributes found');
     }
     // found in this.entity.attributes.fan_modes
     // const hardCodedFanModes = ['auto', 'on']
