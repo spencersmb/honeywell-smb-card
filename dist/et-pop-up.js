@@ -1,79 +1,4 @@
-import { fireEvent, getLovelace } from "custom-card-helpers";
-import { HomeAssistant } from "custom-card-helpers/dist/types";
-import { css, CSSResultGroup, html, LitElement, PropertyValues, TemplateResult } from "lit";
-import { customElement, eventOptions, property, query, queryAsync, state } from "lit/decorators";
-import { localize } from "./localize/localize";
-import { HoneywellCardConfig, HoneywellConfig, HoneywellEntity, HvacModes, IControlProps, ITargetTempsState, ITempClickOptions } from "./types";
-import './components/controls'
-import './components/hvacModes'
-import './components/presetsDropDown'
-import './components/fanModes'
-import './components/auxHeat'
-import './components/humidity'
-@customElement("ha-custom-popup")
-export class HaCustomPopup extends LitElement {
-  @property({ attribute: false }) public hass!: HomeAssistant;
-  @state() private config!: HoneywellCardConfig;
-  @property() open;
-  @state() private tempEntity: null | HoneywellEntity = null
-
-  public static getStubConfig(): Record<string, unknown> {
-    return {};
-  }
-
-  public setConfig(config: HoneywellCardConfig): void {
-    // TODO Check for required fields and that they are of the proper format
-    if (!config) {
-      throw new Error(localize('common.invalid_configuration'));
-    }
-
-    if (config.test_gui) {
-      getLovelace().setEditMode(true);
-    }
-
-    this.config = {
-      ...config,
-    };
-  }
-
-  public handleOutsideModalClick() {
-    this.close()
-  }
-
-  public setHass(hass: any): void{
-    if (!hass) {
-      throw new Error(localize('common.invalid_configuration'));
-    }
-    this.hass = hass
-  }
-
-  protected shouldUpdate(changedProps: PropertyValues): boolean {
-    // console.log('should update',changedProps );
-    // console.log('should update this', this );
-    return !!changedProps
-  }
-
-  closeDialog() {
-    this.open = false;
-  }
-
-  protected render(): TemplateResult {
-    // console.log('test render config', {
-    //   config: this.config,
-    //   hass: this.hass
-    //   // element: this._element
-    // })
-
-    if (this.config.show_error || !this.config.entity) {
-      return this._showError(localize('common.show_error'));
-    }
-
-    this.tempEntity = this.hass.states[this.config.entity] as HoneywellEntity
-    // console.log(this.tempEntity)
-
-    if (this.open === "false") return html``
-
-    return html`
+import{_ as t,e,a as o}from"./query-assigned-elements-7405f3b8.js";import{e as i}from"./index.m-247c165d.js";import{s,y as a,i as r}from"./lit-element-7979863d.js";import{t as n,l as c}from"./localize-3e8a49ff.js";import"./controls.js";import"./hvacModes.js";import"./presetsDropDown.js";import"./fanModes.js";import"./auxHeat.js";import"./humidity.js";import"./utils.js";let l=class extends s{constructor(){super(...arguments),this.tempEntity=null}static getStubConfig(){return{}}setConfig(t){if(!t)throw new Error(c("common.invalid_configuration"));t.test_gui&&i().setEditMode(!0),this.config=Object.assign({},t)}handleOutsideModalClick(){this.close()}setHass(t){if(!t)throw new Error(c("common.invalid_configuration"));this.hass=t}shouldUpdate(t){return!!t}closeDialog(){this.open=!1}render(){var t,e,o;return this.config.show_error||!this.config.entity?this._showError(c("common.show_error")):(this.tempEntity=this.hass.states[this.config.entity],"false"===this.open?a``:a`
           <ha-card
             id="tmp-dialog"
             class="temp-popup"
@@ -136,8 +61,7 @@ export class HaCustomPopup extends LitElement {
               <div class="content-row flex flex-row col-gap-8">
 
                 <!-- FAN MODES -->
-                ${this.tempEntity?.attributes.fan_modes
-                ? html`
+                ${(null===(t=this.tempEntity)||void 0===t?void 0:t.attributes.fan_modes)?a`
                   <div class="flex-1">
                     <div class="category">
                       Fan Mode
@@ -149,11 +73,10 @@ export class HaCustomPopup extends LitElement {
                       ></ha-fan-modes>
                     </div>
                   </div>
-                ` : null}
+                `:null}
 
                 <!-- AUX_HEAT -->
-                ${this.tempEntity?.attributes.aux_heat
-                ? html`
+                ${(null===(e=this.tempEntity)||void 0===e?void 0:e.attributes.aux_heat)?a`
                   <div class="flex-1">
                     <div class="category">
                       Aux Heat
@@ -165,15 +88,13 @@ export class HaCustomPopup extends LitElement {
                       ></ha-honeywell-auxheat>
                     </div>
                   </div>
-                `
-                : null }
+                `:null}
 
               </div>
 
                <!-- Humidity -->
               <div class="content-row flex flex-col">
-                ${this.tempEntity?.attributes.humidity
-                ? html`
+                ${(null===(o=this.tempEntity)||void 0===o?void 0:o.attributes.humidity)?a`
                   <div class="category">
                     Humidity
                   </div>
@@ -182,9 +103,7 @@ export class HaCustomPopup extends LitElement {
                     .config=${this.config}
                   >
                   </ha-honeywell-humidity>
-                `
-                : null
-                }
+                `:null}
               </div>
             </div>
             <slot></slot>
@@ -194,26 +113,7 @@ export class HaCustomPopup extends LitElement {
             id="tmp-overlay"
             class="overlay-popup"
           ></ha-card>
-    `;
-  }
-
-  close() {
-    this.setAttribute('open', 'false')
-  }
-
-  private _showError(error: string): TemplateResult {
-    const errorCard = document.createElement('hui-error-card');
-    errorCard.setConfig({
-      type: 'error',
-      error,
-      origConfig: this.config,
-    });
-
-    return html` ${errorCard} `;
-  }
-
-  static get styles(): CSSResultGroup {
-    return css`
+    `)}close(){this.setAttribute("open","false")}_showError(t){const e=document.createElement("hui-error-card");return e.setConfig({type:"error",error:t,origConfig:this.config}),a` ${e} `}static get styles(){return r`
 
       ha-select{
         width: 100%;
@@ -336,13 +236,4 @@ export class HaCustomPopup extends LitElement {
       .w-full{
         width: 100%;
       }
-    `;
-  }
-
-}
-
-declare global {
-  interface HTMLElementTagNameMap {
-    "ha-custom-popup": any;
-  }
-}
+    `}};t([e({attribute:!1})],l.prototype,"hass",void 0),t([n()],l.prototype,"config",void 0),t([e()],l.prototype,"open",void 0),t([n()],l.prototype,"tempEntity",void 0),l=t([o("ha-custom-popup")],l);export{l as HaCustomPopup};

@@ -25,7 +25,7 @@ import './inputSelect';
 
 /* eslint no-console: 0 */
 console.info(
-  `%c  honeywell-smb-card \n%c  ${localize('common.version')} ${CARD_VERSION}    `,
+  `%c  Honeywell SMB Card \n%c  ${localize('common.version')} ${CARD_VERSION}    `,
   'color: orange; font-weight: bold; background: black',
   'color: white; font-weight: bold; background: dimgray',
 );
@@ -35,15 +35,13 @@ console.info(
 (window as any).customCards.push({
   type: 'honeywell-smb-card',
   name: 'Honeywell SMB Card',
-  description: 'A template custom card for you to create something awesome',
+  description: 'A lovelace card design for Honeywell Thermostats.',
 });
 
 // local/community/honeywell-card/honeywell-smb-card.js
 @customElement('honeywell-smb-card')
 export class HoneywellCard extends LitElement {
 
-  private dialogEl: null | HADialog = null
-  private isDialogOpen = false
   private tempEntity: null | HoneywellEntity = null
   private _popupEl: any = null
 
@@ -76,7 +74,7 @@ export class HoneywellCard extends LitElement {
     }
 
     this.config = {
-      name: 'Boilerplate',
+      name: 'HoneywellCard',
       ...config,
     };
   }
@@ -141,21 +139,10 @@ export class HoneywellCard extends LitElement {
     }
     this.tempEntity = this.hass.states[this.config.entity] as HoneywellEntity
 
-    // const tempProps = tempObj.attributes as HoneywellProps
-    console.log('this.config', this.config)
-    console.log('tempObj', this.tempEntity.attributes)
-    console.log('hass', this.hass)
+    // console.log('this.config', this.config)
+    // console.log('tempObj', this.tempEntity.attributes)
+    // console.log('hass', this.hass)
 
-    // @mousedown="${this.handleRippleActivate}"
-    // @mouseup="${this.handleRippleDeactivate}"
-    //@mousedown="${this.openPopUp}"
-    // @mouseup="${this.handleRippleDeactivate}"
-    // @action=${this._handleAction}
-    //     .actionHandler=${actionHandler({
-    //       hasHold: hasAction(this.config.hold_action),
-    //       hasDoubleClick: hasAction(this.config.double_tap_action),
-    //     })}
-    // @click=${this.openPopUp}
     return html`
       <ha-card
         tabindex="0"
@@ -181,117 +168,12 @@ export class HoneywellCard extends LitElement {
               Current Temp | ${this.tempEntity.attributes.hvac_action}
             </div>
 
-            <!-- ${this.renderDialog()} -->
-
           </div>
 
       </div>
       <mwc-ripple id="ripple"></mwc-ripple>
     </ha-card>
     `;
-  }
-
-  renderDialog() {
-    return html`
-      <div class="love-ha-hidden-container open">
-          <ha-dialog
-            id="tmp-dialog"
-            title="TEST"
-            .hass=${this.hass}
-            @close=${this.closeDialog}
-            @closed=${this.onDialogClose}
-            hideActions=${true}
-          >
-            <div class="content">
-              <div class="temp-pop-up">
-                <div class="temp-pop-up--grid flex flex-row space-between justify-start">
-                  <div class="love-ha-name-grid love-ha-name love-ha-name--start ellipsis">
-                    Basic Card Example
-                  </div>
-                  <div class="temp-pop-up--close">
-                    <ha-icon-button
-                    .label=${this.hass.localize("ui.dialogs.generic.close")}
-                    dialogAction="close"
-                    >
-                      <ha-icon
-                      id="ha-icon"
-                      icon="mdi:close"></ha-icon>
-                    </ha-icon-button>
-                  </div>
-                </div>
-
-                <div class="temp-pop-up--modes flex flex-row space-between">
-                  <ha-custom-button>
-                    <h1>TITLE</h1>
-                    <ha-icon
-                    id="ha-icon-1"
-                    icon="mdi:fire"></ha-icon>
-                  </ha-custom-button>
-
-                </div>
-              </div>
-              <div class="love-ha-temp-container">
-                <ha-icon-button
-                  .label=${this.hass.localize("ui.dialogs.generic.close")}
-                  dialogAction="close"
-                >
-                  <ha-icon
-                  id="ha-icon"
-                  icon="mdi:chevron-down"></ha-icon>
-                </ha-icon-button>
-                <ha-icon-button
-                  .label=${this.hass.localize("ui.dialogs.generic.close")}
-                  @click=${this.closePopUp}
-                >
-                  <ha-icon
-                  id="ha-icon"
-                  icon="mdi:close"></ha-icon>
-                </ha-icon-button>
-              </div>
-              <my-slider-v2
-                .hass=${this.hass}
-                .config=${this.config}></my-slider-v2>
-            </div>
-          </ha-dialog>
-      </div>
-    `
-  }
-
-  renderThermoCtrls() {
-    return html`
-      <div class="flex flex-col">
-
-        <!-- STATUS -->
-        <div>
-          HEAT TO
-        </div>
-
-        <!-- TEMP CTRLS -->
-        <div class="flex flex-row justify-center">
-
-          <!-- MINUS -->
-          <div>
-            -
-          </div>
-
-          <!-- TEMP -->
-          <div>
-            68
-          </div>
-
-          <!-- ADD -->
-          <div>
-            +
-          </div>
-
-        </div>
-
-        <!-- Degree -->
-        <div>
-          &#8457;
-        </div>
-      </div>
-    `
   }
 
   getThermostateStateClass(status: string):string {
@@ -305,83 +187,15 @@ export class HoneywellCard extends LitElement {
    }
   }
 
-  onDialogClose (e:any) {
-    console.log(e)
-    this.isDialogOpen = false
-      if (e.detail.action === 'yes') {
-        alert('BOOM')
-      }
-      else if (e.detail.action === 'no') {
-        alert('nothing happens')
-      }
-  }
-
-  testContentRender() {
-    return html`
-      <ha-select naturalMenuWidth >
-        <mwc-list-item tabindex="1" role="option">item 1</mwc-list-item>
-        <mwc-list-item tabindex="2" role="option">item 2</mwc-list-item>
-        <mwc-list-item tabindex="3" role="option">item 3</mwc-list-item>
-        <mwc-list-item tabindex="4" role="option">item 4</mwc-list-item>
-        <mwc-list-item tabindex="5" role="option">item 5</mwc-list-item>
-      </ha-select>
-    `
-  }
-
   async openPopUp() {
     this.handleRippleActivate()
     if (!this.shadowRoot) return
 
-    if (!this.dialogEl) {
-      this.dialogEl = this.shadowRoot.querySelector('#tmp-dialog');
-      const id = this.config.entity?.replace('.', '-')
-      const customEl = document.querySelector(`#${id}`)
-      // const customEl = document.querySelector('ha-custom-popup')
-      // console.log('test', customEl)
-      // await customEl.addContent(this.testContentRender())
-      // customEl.showPopup()
-      customEl?.setAttribute('open', 'true')
+    this._popupEl?.setAttribute('open', 'true')
 
-      // this.dialogEl = customEl.shadowRoot.querySelector('#tmp-dialog')
-    }
-
-    // console.log('open', this.dialogEl)
-
-    // this.dialogEl?.show()
-    this.isDialogOpen = true
-
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //@ts-ignore
-    // window.browser_mod?.service("popup", {
-    //   content: {
-    //     type: 'html',
-    //     content: this.renderDialog()
-    //   },
-    //   ...this.config,
-    // });
     setTimeout(() => {
       this.handleRippleDeactivate()
-    }, 300)
-  }
-  openBrowserMod(){
-    // fireEvent(this, "browser_mod", { dialog: this.localName });
-  }
-  closeDialog() {
-    console.log('close')
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    // fireEvent(this, "dialog-closed", { dialog: this.localName });
-  }
-  closePopUp() {
-    console.log('closed', this.dialogEl)
-    this.dialogEl?.close()
-  }
-  buttonClicked() {
-    if(!this.config.toggleTrigger) return
-    const stateObj = this.hass.states[this.config.toggleTrigger];
-    const service = stateObj.state === "on" ? "turn_off" : "turn_on";
-
-    this.hass.callService("input_boolean", service, { entity_id: this.config.toggleTrigger });
+    }, 250)
   }
 
   private _rippleHandlers: RippleHandlers = new RippleHandlers(() => {
@@ -398,24 +212,9 @@ export class HoneywellCard extends LitElement {
   }
 
   private handleRippleDeactivate(): void {
-
-    if (!this.isDialogOpen) {
-      return
-    }
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     this._ripple.then((r) => r && r.endPress && this._rippleHandlers.endPress());
-  }
-
-  private _handleAction(ev: ActionHandlerEvent): void {
-    console.log('action', {
-      hass: this.hass,
-      config: this.config,
-      detail: ev.detail.action
-    })
-    if (this.hass && this.config && ev.detail.action) {
-      handleAction(this, this.hass, this.config, ev.detail.action);
-    }
   }
 
   private _showWarning(warning: string): TemplateResult {
