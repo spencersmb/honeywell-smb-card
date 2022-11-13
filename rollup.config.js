@@ -41,8 +41,11 @@ export default [
   {
     input: 'src/honeywell-smb-card.ts',
     output: {
-      dir: 'dist',
+      // dir: 'dist',
+      inlineDynamicImports: true,
       format: 'es',
+      file: 'dist/honeywell-smb-card.js',
+      name: 'HoneywellSmbCard'
     },
     plugins: [...plugins],
   },
