@@ -268,6 +268,7 @@ export class HaCustomPopup extends LitElement {
         width: 100%;
         height: 100%;
         z-index: 1;
+        background: transparent;
       }
       .header{
         margin-bottom: 18px;
