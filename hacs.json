@@ -1,5 +1,5 @@
 {
     "name": "Honeywell SMB Card",
     "render_readme": true,
-    "filename": "honeywell-smb-card.js"
+    "filename": "dist/honeywell-smb-card.js"
 }

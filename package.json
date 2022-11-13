@@ -11,7 +11,7 @@
     "custom-cards"
   ],
   "module": "honeywell-smb-card.js",
-  "repository": "git@github.com:spencersmb/custom-etha-honeywell-card.git",
+  "repository": "git@github.com:spencersmb/honeywell-smb-card.git",
   "author": "Spencer Bigum <spencer.bigum@gmail.com>",
   "license": "MIT",
   "dependencies": {
